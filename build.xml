@@ -1,0 +1,40 @@
+<project>
+    <property name="ext-jar" location="jars"/>
+    <property name="path" location="/Users/prabhu/NetBeansProjects/Forum/web/WEB-INF/web.xml"/>
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+    <path id="build.classpath">
+        <fileset dir="${ext-jar}">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
+    <target name="compile" depends="clean">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes" includeantruntime="false" classpathref="build.classpath" />
+    </target>
+    <target name="jar" depends="compile">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/Forum.jar" basedir="build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="edu.MainClass" />
+            </manifest>
+        </jar>
+    </target>
+    <target name="run" depends="jar" >
+        <java jar="build/jar/Forum.jar" fork="false" />
+    </target>
+    <target name="War" depends="run">
+        <mkdir dir="build/war"/>
+        <war destfile="build/war/Forum.war" webxml="${path}">
+           <classes dir="build"/>
+           <fileset dir="web" />
+        </war>
+    </target>
+    <target name="deploy-servlet" depends="War">
+        <delete dir="/Users/prabhu/Desktop/Prabhu/Tools/Apache Tomcat/apache-tomcat-7.0.70/webapps/ROOT"/>
+        <copy todir="/Users/prabhu/Desktop/Prabhu/Tools/Apache Tomcat/apache-tomcat-7.0.70/webapps/ROOT">
+            <fileset dir="build/war/"/>
+        </copy>
+    </target>
+</project>
